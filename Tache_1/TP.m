@@ -38,4 +38,10 @@ for j=1:5
     end
 end
 
+%% Sous tache 4
+
+%Meme car pas bruit
+
+%% 
+
         
