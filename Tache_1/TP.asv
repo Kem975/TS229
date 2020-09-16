@@ -10,9 +10,7 @@ Fse=Ts*Fe;
 eb_n0_db=0:1:10;
 eb_n0=10.^(eb_n0_db/10);
 TEB=zeros(size(eb_n0));
-Pb=(1/2)*erfc(sqrt(eb_n0));
-sigma=sqrt(0.25); %Variance théorique des symboles
-n_b=2;
+Pb=qfunc(sqrt(2*eb_n0));
 %% Emetteur
 p_t = 0.5*([-1*ones(Fse/2,1);ones(Fse/2,1)]); %Filtre
 for k=1:length(eb_n0)
@@ -29,8 +27,7 @@ for k=1:length(eb_n0)
             sl_t = [sl_t ; i.*p_t];
         end
         sl_t = sl_t+0.5;
-        sigma2=((sigma*Nb)/2)/(n_b*eb_n0(k));
-        nl_t=sqrt(sigma2/2)*randn(length(sl_t),1);
+        nl_t=sqrt(1/2)*randn(20000,1);
         yl_t=sl_t+nl_t;
         %% Recepteur
         
@@ -61,8 +58,6 @@ for k=1:length(eb_n0)
     end
     TEB(k)=error_cnt/bit_cnt;
 end
-figure;
-plot(TEB);
-figure;
-plot(Pb);
+plot(TEB)
+%plot(Pb)
 
