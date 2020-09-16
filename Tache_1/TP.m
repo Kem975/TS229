@@ -60,3 +60,4 @@ bit_cnt=bit_cnt+Nb
 end
 plot(TEB)
 %plot(Pb)
+
