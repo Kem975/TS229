@@ -14,7 +14,8 @@ Pb=(1/2)*erfc(sqrt(eb_n0));
 sigma=sqrt(0.25); %Variance théorique des symboles
 n_b=2;
 %% Emetteur
-p_t = 0.5*([-1*ones(Fse/2,1);ones(Fse/2,1)]); %Filtre
+p_t = 0.5*([-1*ones(Fse/2,1);ones(Fse/2,1)]);%Filtre
+Eg=sum(p_t.^2);
 for k=1:length(eb_n0)
     error_cnt=0;
     bit_cnt=0;
@@ -23,14 +24,14 @@ for k=1:length(eb_n0)
         %bk = [1,0,0,1,0];
         bk = randi([0,1],[1,Nb]);
         A_k=real(pskmod(bk, 2)); %Symboles
-        
+        sl_t=conv(A_k,p_t);
         sl_t=A_k(1).*p_t;
         for i=A_k(:,2:Nb)
             sl_t = [sl_t ; i.*p_t];
         end
         sl_t = sl_t+0.5;
-        sigma2=((sigma*Nb)/2)/(n_b*eb_n0(k));
-        nl_t=sqrt(sigma2/2)*randn(length(sl_t),1);
+        sigma2=(sigma*Eg)/(n_b*eb_n0(k));
+        nl_t=sqrt(Eg*sigma2/2)*randn(length(sl_t),1);
         yl_t=sl_t+nl_t;
         %% Recepteur
         
@@ -39,12 +40,11 @@ for k=1:length(eb_n0)
         Fin=length(bk)*Fse;
         rm= rl_t(Debut:Fse:Fin);
         
-        %rm=downsample(rl_t,Fse);
         
         bk_chap=zeros(Nb,1);
         erreur=0;
         for j=1:Nb
-            if rm(j)>1
+            if rm(j)>0
                 bk_chap(j)=0;
                 if bk(j)==1
                     erreur=erreur+1;
@@ -63,6 +63,4 @@ for k=1:length(eb_n0)
 end
 figure;
 plot(TEB);
-figure;
-plot(Pb);
 
